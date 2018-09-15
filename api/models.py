@@ -16,7 +16,7 @@ class Shoppinglist(models.Model):
 
         return {}.format(self.name)
 
-class ShoppingItem(models.Model):
+class Shoppingitem(models.Model):
     """This class represents the ShoppingItem model."""
     
     shoppinglist = models.ForeignKey(Shoppinglist, related_name="shoppingitems")
