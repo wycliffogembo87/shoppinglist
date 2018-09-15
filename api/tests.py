@@ -18,21 +18,14 @@ class ModelTestCase(TestCase):
         self.shoppinglist_budget = 500.00
         self.shoppingitem_name = "Mango"
         self.shoppinglist = Shoppinglist(name=self.shoppinglist_name, budget=self.shoppinglist_budget)
-        self.shoppingitem = Shoppingitem(shoppinglist=self.shoppinglist, name=self.shoppingitem_name)
 
     def test_model_can_create_a_shoppinglist(self):
-        """Test the shoppinglist model can create a shoppinglist."""
+        """Test the shoppingitem model can create a shoppingitem."""
         old_count = Shoppinglist.objects.count()
         self.shoppinglist.save()
         new_count = Shoppinglist.objects.count()
         self.assertNotEqual(old_count, new_count)
 
-    def test_model_can_create_a_shoppingitem(self):
-        """Test the shoppingitem model can create a shoppingitem."""
-        old_count = Shoppingitem.objects.count()
-        self.shoppingitem.save()
-        new_count = Shoppingitem.objects.count()
-        self.assertNotEqual(old_count, new_count)
 
 class ViewTestCase(TestCase):
     """This class defines the test suite for the api view."""
@@ -41,11 +34,19 @@ class ViewTestCase(TestCase):
         """Define the test client and other test variables."""
         self.client = APIClient()
         self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00}
-        self.response = self.client.post(
-            reverse('create'), self.shoppinglist_data, format="json"
+        self.shoppingitem_data = {'name': 'Mango'}
+        self.response_shoppinglist = self.client.post(
+            reverse('create_shoppinglist'), self.shoppinglist_data, format="json"
+        )
+        self.response_shoppingitem = self.client.post(
+            reverse('create_shoppingitem', args=[1]), self.shoppinglist_data, format="json"
         )
 
     def test_api_can_create_a_shoppinglist(self):
         """Test the api has shoppinglist creation capability."""
-        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(self.response_shoppinglist.status_code, status.HTTP_201_CREATED)
+
+    def test_api_can_create_a_shoppingitem(self):
+        """Test the api has shoppingitem creation capability."""
+        self.assertEqual(self.response_shoppingitem.status_code, status.HTTP_201_CREATED)
 
