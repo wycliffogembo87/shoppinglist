@@ -2,6 +2,9 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
+from rest_framework.test import APIClient
+from rest_framework import status
+from django.core.urlresolvers import reverse
 
 from .models import Shoppinglist
 
@@ -21,3 +24,19 @@ class ModelTestCase(TestCase):
         self.shoppinglist.save()
         new_count = Shoppinglist.objects.count()
         self.assertNotEqual(old_count, new_count)
+
+class ViewTestCase(TestCase):
+    """This class defines the test suite for the api view."""
+
+    def setUp(self):
+        """Define the test client and other test variables."""
+        self.client = APIClient()
+        self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00}
+        self.response = self.client.post(
+            reverse('create'), self.shoppinglist_data, format="json"
+        )
+
+    def test_api_can_create_a_shopping_list(self):
+        """Test the api has shoppinglist creation capability."""
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
