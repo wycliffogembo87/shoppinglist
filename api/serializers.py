@@ -14,11 +14,12 @@ class ShoppingitemSerializer(serializers.ModelSerializer):
 
 class ShoppinglistSerializer(serializers.ModelSerializer):
     """Serializer to map the shoppinglist model instance into JSON format."""
+    user = serializers.ReadOnlyField(source='user.username')
     shoppingitems = ShoppingitemSerializer(many=True, read_only=True)
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
         model = Shoppinglist
-        fields = ('id', 'name', 'budget', 'shoppingitems')
+        fields = ('id', 'name', 'budget', 'user', 'shoppingitems')
         read_only_fields = ('date_created', 'date_modified')
 
