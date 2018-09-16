@@ -53,11 +53,11 @@ class ShoppingitemListView(generics.ListCreateAPIView):
         
 
 class ShoppinglistDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """This class defines the shoppinglist create behaviour of our rest api."""
+    """This class defines the shoppinglist update behaviour of our rest api."""
     serializer_class = ShoppinglistSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwner)
-    lookup_url_kwarg = 'shoppinglist_id'
+    lookup_url_kwarg = 'pk'
 
     def get_queryset(self):
-        shoppinglist = self.kwargs['shoppinglist_id']
+        shoppinglist = self.kwargs['pk']
         return Shoppinglist.objects.filter(id=shoppinglist)

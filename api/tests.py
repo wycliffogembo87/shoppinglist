@@ -80,10 +80,10 @@ class ViewTestCase(TestCase):
 
     def test_api_can_update_shoppinglist(self):
          """Test the api can update a given shoppinglist."""
-         shoppinglist = Shoppinglist.objects.get()
+         shoppinglist = Shoppinglist.objects.get(id=1)
          change_shoppinglist = {'name': 'Something new'}
          response = self.client.put(
-             reverse('shoppingitemdetails', kwargs={'pk': shoppinglist.id}),
-             change_bucketlist, format='json'
+             reverse('shoppinglistdetails', kwargs={'pk': shoppinglist.id}),
+             change_shoppinglist, format='json'
          )
          self.assertEqual(response.status_code, status.HTTP_200_OK)
