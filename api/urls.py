@@ -4,6 +4,7 @@ from .views import ShoppinglistAPIView
 from .views import ShoppingitemAPIView
 
 urlpatterns = {
+    url(r'^auth/', include('rest_framework.urls', namespace="rest_framework")),
     url(r'^shoppinglists/$', ShoppinglistAPIView.as_view(), name="shoppinglists"),
     url(r'^shoppinglists/(?P<pk>[0-9]+)/shoppingitems/$', ShoppingitemAPIView.as_view(), name="shoppingitems"),
 }
