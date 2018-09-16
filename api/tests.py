@@ -73,6 +73,17 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_authorization_is_enforced(self):
+        """Test that the api has user authorization."""
         new_client = APIClient()
         response = new_client.get('/shoppinglists/', format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_api_can_update_shoppinglist(self):
+         """Test the api can update a given shoppinglist."""
+         shoppinglist = Shoppinglist.objects.get()
+         change_shoppinglist = {'name': 'Something new'}
+         response = self.client.put(
+             reverse('shoppingitemdetails', kwargs={'pk': shoppinglist.id}),
+             change_bucketlist, format='json'
+         )
+         self.assertEqual(response.status_code, status.HTTP_200_OK)
