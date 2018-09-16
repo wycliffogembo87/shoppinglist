@@ -8,6 +8,8 @@ class Shoppinglist(models.Model):
     
     name = models.CharField(max_length=255, blank=False, unique=True)
     budget = models.DecimalField(decimal_places=2, max_digits=20, default=0.00)
+    user = models.ForeignKey(
+        'auth.User', related_name="shoppinglists", on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -19,8 +21,9 @@ class Shoppinglist(models.Model):
 class Shoppingitem(models.Model):
     """This class represents the ShoppingItem model."""
     
-    shoppinglist = models.ForeignKey(Shoppinglist, related_name="shoppingitems")
     name = models.CharField(max_length=255, blank=False, unique=True)
+    shoppinglist = models.ForeignKey(
+        Shoppinglist, related_name="shoppingitems", on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 

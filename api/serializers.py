@@ -10,6 +10,7 @@ class ShoppingitemSerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
         model = Shoppingitem
         fields = ('id', 'name')
+        read_only_fields = ('date_created', 'date_modified')
 
 class ShoppinglistSerializer(serializers.ModelSerializer):
     """Serializer to map the shoppinglist model instance into JSON format."""
@@ -19,4 +20,5 @@ class ShoppinglistSerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
         model = Shoppinglist
         fields = ('id', 'name', 'budget', 'shoppingitems')
+        read_only_fields = ('date_created', 'date_modified')
 
