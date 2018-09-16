@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 
 from rest_framework import generics
+from rest_framework import permissions
 from .serializers import ShoppinglistSerializer
 from .serializers import ShoppingitemSerializer
 from .models import Shoppinglist, Shoppingitem
@@ -13,6 +14,7 @@ class ShoppinglistAPIView(generics.ListCreateAPIView):
     """This class defines the shoppinglist create behaviour of our rest api."""
     queryset = Shoppinglist.objects.all()
     serializer_class = ShoppinglistSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def perform_create(self, serializer):
         """Save the post data when creating a new shoppinglist."""
