@@ -71,3 +71,8 @@ class ViewTestCase(TestCase):
             reverse('shoppingitems', args=[1]), format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_authorization_is_enforced(self):
+        new_client = APIClient()
+        response = new_client.get('/shoppinglists/', format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
