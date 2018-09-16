@@ -5,6 +5,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from .models import Shoppinglist, Shoppingitem
 
@@ -14,10 +15,12 @@ class ModelTestCase(TestCase):
 
     def setUp(self):
         """Define the test client and other test variables."""
+        user = User.objects.create(username="whitehat")
         self.shoppinglist_name = "Groceries"
         self.shoppinglist_budget = 500.00
         self.shoppingitem_name = "Mango"
-        self.shoppinglist = Shoppinglist(name=self.shoppinglist_name, budget=self.shoppinglist_budget)
+        self.shoppinglist = Shoppinglist(
+            name=self.shoppinglist_name, budget=self.shoppinglist_budget, user = user)
 
     def test_model_can_create_a_shoppinglist(self):
         """Test the shoppingitem model can create a shoppingitem."""
@@ -32,34 +35,39 @@ class ViewTestCase(TestCase):
 
     def setUp(self):
         """Define the test client and other test variables."""
+        user = User.objects.create(username="whitehat")
+    
+        # Initialize client and force it to authenticate
         self.client = APIClient()
-        self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00}
+        self.client.force_authenticate(user=user)
+
+        self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00, 'user': user.id}
         self.shoppingitem_data = {'name': 'Mango'}
-        self.response_create_shoppinglist = self.client.post(
+
+    def test_api_can_create_shoppinglist(self):
+        """Test the api has shoppinglist creation capability."""
+        response = self.client.post(
             reverse('shoppinglists'), self.shoppinglist_data, format="json"
         )
-        self.response_create_shoppingitem = self.client.post(
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_can_create_shoppingitem(self):
+        """Test the api has shoppingitem creation capability."""
+        response = self.client.post(
             reverse('shoppingitems', args=[1]), self.shoppinglist_data, format="json"
         )
-        self.response_fetch_shoppinglists = self.client.get(
-            reverse('shoppinglists'), format="json"
-        )
-        self.response_fetch_shoppingitems = self.client.get(
-            reverse('shoppingitems', args=[1]), format="json"
-        )
-
-    def test_api_can_create_a_shoppinglist(self):
-        """Test the api has shoppinglist creation capability."""
-        self.assertEqual(self.response_create_shoppinglist.status_code, status.HTTP_201_CREATED)
-
-    def test_api_can_create_a_shoppingitem(self):
-        """Test the api has shoppingitem creation capability."""
-        self.assertEqual(self.response_create_shoppingitem.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_api_can_fetch_shoppinglists(self):
         """Test the api has shoppinglists fetching capability."""
-        self.assertEqual(self.response_fetch_shoppinglists.status_code, status.HTTP_200_OK)
+        response = self.client.get(
+            reverse('shoppinglists'), format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_api_can_fetch_shoppingitems(self):
         """Test the api has shoppingitems fetching capability."""
-        self.assertEqual(self.response_fetch_shoppingitems.status_code, status.HTTP_200_OK)
+        response = self.client.get(
+            reverse('shoppingitems', args=[1]), format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
