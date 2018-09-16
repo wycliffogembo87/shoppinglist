@@ -54,7 +54,6 @@ class ShoppingitemListView(generics.ListCreateAPIView):
 
         return queryset
         
-
 class ShoppinglistDetailView(generics.RetrieveUpdateDestroyAPIView):
     """This class defines the shoppinglist update behaviour of our rest api."""
     serializer_class = ShoppinglistSerializer
