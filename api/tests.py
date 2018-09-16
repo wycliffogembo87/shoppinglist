@@ -20,7 +20,7 @@ class ModelTestCase(TestCase):
         self.shoppinglist_budget = 500.00
         self.shoppingitem_name = "Mango"
         self.shoppinglist = Shoppinglist(
-            name=self.shoppinglist_name, budget=self.shoppinglist_budget, user = user)
+            name=self.shoppinglist_name, budget=self.shoppinglist_budget, owner=user)
 
     def test_model_can_create_a_shoppinglist(self):
         """Test the shoppingitem model can create a shoppingitem."""
@@ -41,20 +41,20 @@ class ViewTestCase(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=user)
 
-        self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00, 'user': user.id}
-        self.shoppingitem_data = {'name': 'Mango'}
+        self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00, 'owner': user.id}
+        self.shoppingitem_data = {'name': 'Mangoes'}
+
+    def test_api_can_create_shoppingitem(self):
+        """Test the api has shoppingitem creation capability."""
+        response = self.client.post(
+            reverse('shoppingitems', args=[1]), self.shoppingitem_data, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_api_can_create_shoppinglist(self):
         """Test the api has shoppinglist creation capability."""
         response = self.client.post(
             reverse('shoppinglists'), self.shoppinglist_data, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_api_can_create_shoppingitem(self):
-        """Test the api has shoppingitem creation capability."""
-        response = self.client.post(
-            reverse('shoppingitems', args=[1]), self.shoppinglist_data, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

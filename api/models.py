@@ -8,7 +8,7 @@ class Shoppinglist(models.Model):
     
     name = models.CharField(max_length=255, blank=False, unique=True)
     budget = models.DecimalField(decimal_places=2, max_digits=20, default=0.00)
-    user = models.ForeignKey(
+    owner = models.ForeignKey(
         'auth.User', related_name="shoppinglists", on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

@@ -5,26 +5,59 @@ from django.shortcuts import render
 
 from rest_framework import generics
 from rest_framework import permissions
+from .permissions import IsOwner
 from .serializers import ShoppinglistSerializer
 from .serializers import ShoppingitemSerializer
-from .models import Shoppinglist, Shoppingitem
+from .models import Shoppinglist
+from .models import Shoppingitem
 
 
-class ShoppinglistAPIView(generics.ListCreateAPIView):
+class ShoppinglistListView(generics.ListCreateAPIView):
     """This class defines the shoppinglist create behaviour of our rest api."""
-    queryset = Shoppinglist.objects.all()
     serializer_class = ShoppinglistSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
 
     def perform_create(self, serializer):
         """Save the post data when creating a new shoppinglist."""
-        serializer.save(user=self.request.user)
+        serializer.save(owner=self.request.user)
 
-class ShoppingitemAPIView(generics.ListCreateAPIView):
-    """This class defines the shoppingitem create behaviour of our rest api."""
-    queryset = Shoppingitem.objects.all()
+    def get_queryset(self):
+        queryset = Shoppinglist.objects.all()
+        shoppinglist = (self.kwargs).get('shoppinglist_id')
+
+        if shoppinglist:
+            queryset = queryset.filter(id=shoppinglist)
+
+        return queryset
+
+class ShoppingitemListView(generics.ListCreateAPIView):
+    """This class defines the shoppinglist create behaviour of our rest api."""
     serializer_class = ShoppingitemSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
 
     def perform_create(self, serializer):
-        """Save the post data when creating a new shoppingitem."""
-        serializer.save(shoppinglist_id=self.kwargs['pk'])
+        """Save the post data when creating a new shoppinglist."""
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = Shoppingitem.objects.all()
+        shoppinglist = (self.kwargs).get('shoppinglist_id')
+        shoppingitem = (self.kwargs).get('shoppingitem_id')
+
+        if shoppingitem and shoppinglist:
+            queryset = queryset.filter(id=shoppingitem, shoppinglist_id=shoppinglist)
+        elif shoppinglist:
+            queryset = queryset.filter(shoppinglist_id=shoppinglist)
+
+        return queryset
+        
+
+class ShoppinglistDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """This class defines the shoppinglist create behaviour of our rest api."""
+    serializer_class = ShoppinglistSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
+    lookup_url_kwarg = 'shoppinglist_id'
+
+    def get_queryset(self):
+        shoppinglist = self.kwargs['shoppinglist_id']
+        return Shoppinglist.objects.filter(id=shoppinglist)
