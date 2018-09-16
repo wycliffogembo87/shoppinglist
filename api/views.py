@@ -16,7 +16,7 @@ class ShoppinglistAPIView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         """Save the post data when creating a new shoppinglist."""
-        serializer.save()
+        serializer.save(user=self.request.user)
 
 class ShoppingitemAPIView(generics.ListCreateAPIView):
     """This class defines the shoppingitem create behaviour of our rest api."""
