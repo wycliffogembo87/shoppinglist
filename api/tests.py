@@ -44,13 +44,6 @@ class ViewTestCase(TestCase):
         self.shoppinglist_data = {'name': 'Groceries', 'budget': 500.00, 'owner': user.id}
         self.shoppingitem_data = {'name': 'Mangoes'}
 
-    def test_api_can_create_shoppingitem(self):
-        """Test the api has shoppingitem creation capability."""
-        response = self.client.post(
-            reverse('shoppingitems', args=[1]), self.shoppingitem_data, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
     def test_api_can_create_shoppinglist(self):
         """Test the api has shoppinglist creation capability."""
         response = self.client.post(
@@ -58,10 +51,18 @@ class ViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_api_can_create_shoppingitem(self):
+        """Test the api has shoppingitem creation capability."""
+        response = self.client.post(
+            reverse('shoppingitems', args=[1]), self.shoppingitem_data, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
     def test_api_can_fetch_shoppinglists(self):
         """Test the api has shoppinglists fetching capability."""
         response = self.client.get(
-            reverse('shoppinglists'), format="json"
+            reverse('shoppinglists'), args=[1], format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -80,10 +81,9 @@ class ViewTestCase(TestCase):
 
     def test_api_can_update_shoppinglist(self):
          """Test the api can update a given shoppinglist."""
-         shoppinglist = Shoppinglist.objects.get(id=1)
          change_shoppinglist = {'name': 'Something new'}
          response = self.client.put(
-             reverse('shoppinglistdetails', kwargs={'pk': shoppinglist.id}),
+             reverse('shoppinglistdetails', kwargs={'shoppinglist_id': 1}),
              change_shoppinglist, format='json'
          )
          self.assertEqual(response.status_code, status.HTTP_200_OK)

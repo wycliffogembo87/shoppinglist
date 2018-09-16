@@ -16,7 +16,7 @@ urlpatterns = {
     url(r'^shoppinglists/(?P<shoppinglist_id>[0-9]+)/shoppingitems/$', ShoppingitemListView.as_view(), name="shoppingitems"),
     url(r'^shoppinglists/(?P<shoppinglist_id>[0-9]+)/shoppingitems/(?P<shoppingitem_id>[0-9]+)/$', ShoppingitemListView.as_view(), name="shoppingitems"),
     url(r'^get_token/', obtain_auth_token),
-    url(r'^shoppinglists/(?P<pk>[0-9]+)/$', ShoppinglistDetailView.as_view(), name="shoppinglistdetails"),
+    url(r'^shoppinglist/(?P<shoppinglist_id>[0-9]+)/$', ShoppinglistDetailView.as_view(), name="shoppinglistdetails"),
 }
 
 urlpatterns = format_suffix_patterns(urlpatterns)

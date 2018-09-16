@@ -37,14 +37,17 @@ class ShoppingitemListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         """Save the post data when creating a new shoppinglist."""
-        serializer.save(owner=self.request.user)
+        serializer.save(
+            shoppinglist_id=self.kwargs['shoppinglist_id']
+        )
 
     def get_queryset(self):
         queryset = Shoppingitem.objects.all()
+
         shoppinglist = (self.kwargs).get('shoppinglist_id')
         shoppingitem = (self.kwargs).get('shoppingitem_id')
 
-        if shoppingitem and shoppinglist:
+        if shoppinglist and shoppingitem:
             queryset = queryset.filter(id=shoppingitem, shoppinglist_id=shoppinglist)
         elif shoppinglist:
             queryset = queryset.filter(shoppinglist_id=shoppinglist)
@@ -56,8 +59,8 @@ class ShoppinglistDetailView(generics.RetrieveUpdateDestroyAPIView):
     """This class defines the shoppinglist update behaviour of our rest api."""
     serializer_class = ShoppinglistSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwner)
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'shoppinglist_id'
 
     def get_queryset(self):
-        shoppinglist = self.kwargs['pk']
+        shoppinglist = self.kwargs['shoppinglist_id']
         return Shoppinglist.objects.filter(id=shoppinglist)

@@ -22,6 +22,3 @@ class ShoppinglistSerializer(serializers.ModelSerializer):
         model = Shoppinglist
         fields = ('id', 'name', 'budget', 'owner', 'shoppingitems')
         read_only_fields = ('date_created', 'date_modified')
-
-    def create(self, validated_data):
-        return Shoppinglist.objects.create(**validated_data)
