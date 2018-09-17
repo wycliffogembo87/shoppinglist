@@ -4,7 +4,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from .views import ShoppinglistListView
 from .views import ShoppingitemListView
 from .views import ShoppinglistDetailView
-from .views import ShoppingitemDetailView
+# from .views import ShoppingitemDetailView
 
 urlpatterns = {
     url(r'^auth/', include('rest_framework.urls', namespace="rest_framework")),
